@@ -44,13 +44,13 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  --font-main: var(--font-italiana);
+  --font-family: var(--font-dm-serif-text) serif;
   --color-true-gold: #d2b48c;
  
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-family);
   min-height: 100vh;
 }
 
