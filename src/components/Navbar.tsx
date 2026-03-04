@@ -8,7 +8,7 @@ const dmSerifText = DM_Serif_Text({
 
 const Navbar = () => {
     return (
-        <nav className={`flex justify-between p-4 text-white border-b border-gray-600 ${dmSerifText.className}`}>
+        <nav className={`flex justify-between p-4 px-12 text-white border-b border-gray-600 ${dmSerifText.className}`}>
             <ul className={`${dmSerifText.className} `}>
                 <li><a href="/" className="text-true-gold text-xl">ROYELLE</a></li>
             </ul>

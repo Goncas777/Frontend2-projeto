@@ -34,31 +34,33 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 0,
-            pointerEvents: 'none',
-          }}
-        >
-          <Image
-            src="/background.png"
-            alt=""
-            fill
-            priority
+        <main>
+          <div
+            aria-hidden="true"
             style={{
-              objectFit: 'cover',
-              opacity: 1,
-              filter: 'brightness(0.25)',
+              position: 'fixed',
+              inset: 0,
+              zIndex: 0,
+              pointerEvents: 'none',
             }}
-          />
-        </div>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <Navbar />
-          {children}
-        </div>
+          >
+            <Image
+              src="/background.png"
+              alt=""
+              fill
+              priority
+              style={{
+                objectFit: 'cover',
+                opacity: 1,
+                filter: 'brightness(0.25)',
+              }}
+            />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <Navbar />
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );
