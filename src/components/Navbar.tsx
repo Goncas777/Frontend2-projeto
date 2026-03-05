@@ -13,8 +13,12 @@ const Navbar = () => {
                 <li><a href="/" className="text-true-gold text-xl">ROYELLE</a></li>
             </ul>
             <ul className="flex gap-4">
-                <li className="px-5 py-1 bg-true-gold rounded-lg text-black"><a href="/register">Register</a></li> 
-                <li className="px-5 py-1 rounded-lg text-gray-400"><a href="/signin">Sign In</a></li>
+                <a href="/register">
+                <li className="px-5 py-1 bg-true-gold opacity-100 hover:opacity-80 hover:cursor-pointer rounded-lg text-black" >Register</li> 
+                </a>
+                <a href="/signin">
+                <li className="px-5 py-1 hover:text-true-gold hover:cursor-pointer rounded-lg text-gray-400">Sign In</li>
+                </a>
             </ul>
         </nav>
     );

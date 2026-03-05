@@ -52,7 +52,7 @@ export default function RootLayout({
               style={{
                 objectFit: 'cover',
                 opacity: 1,
-                filter: 'brightness(0.25)',
+                filter: 'brightness(0.20) ',
               }}
             />
           </div>
