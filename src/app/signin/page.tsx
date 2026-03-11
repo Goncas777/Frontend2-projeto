@@ -16,9 +16,9 @@ const Register = () => {
             {/* Header */}
             <div className="text-center mb-10 z-10">
                 <h1 className={`${dmSerifText.className} text-5xl font-bold text-true-gold mb-3 tracking-wide`}>
-                    Join ROYELLE
+                    Welcome Back
                 </h1>
-                <p className="text-gray-400 text-lg">Begin your exclusive gaming journey</p>
+                <p className="text-gray-400 text-lg">Continue your exclusive gaming journey</p>
             </div>
 
             {/* Form Card */}
@@ -65,30 +65,18 @@ const Register = () => {
                     />
                 </div>
 
-                <div className="mb-8">
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-gray-300 tracking-wide uppercase">
-                        Confirm password
-                    </label>
-                    <input 
-                        type="password" 
-                        id="confirmPassword" 
-                        name="confirmPassword" 
-                        placeholder="Confirm your password"
-                        className="w-full px-4 py-3 bg-black/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-true-gold focus:ring-1 focus:ring-true-gold/50 transition-all duration-300" 
-                    />
-                </div>
                 
                 <button 
                     type="submit" 
                     className="w-full py-3 bg-gradient-to-r from-true-gold via-amber-600 to-true-gold text-black font-bold rounded-lg hover:from-amber-500 hover:via-true-gold hover:to-amber-500 transition-all duration-300 shadow-lg shadow-true-gold/20 hover:shadow-true-gold/40 uppercase tracking-wider"
                 >
-                    Create Account
+                    Sign In
                 </button>
                 
                 <p className="text-center mt-6 text-gray-500 text-sm">
-                    Already a member?{" "}
-                    <a href="/signin" className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
-                        Sign In
+                    Don't have an account?{" "}
+                    <a href="/register" className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
+                        Register
                     </a>
                 </p>
             </form>

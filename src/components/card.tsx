@@ -4,6 +4,7 @@ const Card = () => {
     return (
         <>
             {gameNames.map((game) => (
+                <a href={`/games/${game.toLowerCase()}`}>
                 <div
                     key={game}
                     className="group relative w-100 h-60 bg-cover bg-center rounded-lg shadow-lg border border-gray-600 overflow-hidden cursor-pointer"
@@ -17,8 +18,10 @@ const Card = () => {
                         {game}
                     </h2>
                 </div>
+                </a>
             ))}
             {gameNames.reverse().map((game) => (
+                <a href={`/games/${game.toLowerCase()}`}>
                 <div
                     key={game}
                     className="group relative w-100 h-60 bg-cover bg-center rounded-lg shadow-lg border border-gray-600 overflow-hidden cursor-pointer"
@@ -32,6 +35,7 @@ const Card = () => {
                         {game}
                     </h2>
                 </div>
+                </a>
             ))}
         </>
     );
