@@ -9,11 +9,10 @@ const dmSerifText = DM_Serif_Text({
 const Register = () => {
     return (
         <div className={`${dmSerifText.variable} flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white relative overflow-hidden`}>
-            {/* Decorative elements */}
+
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-true-gold/10 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-true-gold/5 rounded-full blur-3xl pointer-events-none" />
             
-            {/* Header */}
             <div className="text-center mb-10 z-10">
                 <h1 className={`${dmSerifText.className} text-5xl font-bold text-true-gold mb-3 tracking-wide`}>
                     Join ROYELLE
@@ -21,9 +20,7 @@ const Register = () => {
                 <p className="text-gray-400 text-lg">Begin your exclusive gaming journey</p>
             </div>
 
-            {/* Form Card */}
             <form className="relative z-10 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 backdrop-blur-sm p-10 rounded-2xl shadow-2xl w-full max-w-md border border-true-gold/20 hover:border-true-gold/40 transition-all duration-500">
-                {/* Golden accent line */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-true-gold to-transparent rounded-full" />
                 
                 <div className="mb-6">
@@ -93,7 +90,6 @@ const Register = () => {
                 </p>
             </form>
 
-            {/* Bottom decorative text */}
             <p className="mt-10 text-gray-600 text-sm z-10">
                 ✦ Exclusive Games for Elite Players ✦
             </p>
