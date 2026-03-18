@@ -20,7 +20,7 @@ const PlayingCard = ({ card }: { card: Card }) => (
   <img
     src={getCardImageUrl(card)}
     alt={`${card.value}${card.suit}`}
-    className="w-16 h-24 rounded shadow-xl"
+    className="w-30 h-45 rounded shadow-xl"
   />
 );
 
@@ -141,9 +141,9 @@ const Hands = () => {
             </div>
 
             {/* Player cards (left) + action buttons (right) — bottom of the table */}
-            <div className="absolute bottom-[8%] left-0 right-0 px-8 flex items-end justify-between">
+            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 justify-between w-full max-w-3xl px-10">
                 <div className="flex flex-col gap-1">
-                    <span className="text-true-gold text-xs font-semibold bg-black/50 px-2 py-0.5 rounded self-start">
+                    <span className="text-true-gold text-xs font-semibold bg-black/50 px-2 py-0.5 rounded ">
                         Your Hand ({calculateHandValue(playerHand)})
                     </span>
                     <div className="flex gap-2">
@@ -153,7 +153,10 @@ const Hands = () => {
                     </div>
                 </div>
 
-                {gameResult ? (
+                
+            </div>
+            <div className="absolute bottom-[5%] right-10">
+            {gameResult ? (
                     <div className="flex flex-col items-center gap-3">
                         <span className="text-2xl font-bold text-true-gold bg-black/70 px-5 py-2 rounded-lg">
                             {gameResult}
@@ -181,7 +184,7 @@ const Hands = () => {
                         </button>
                     </div>
                 )}
-            </div>
+                </div>
         </div>
     );
 };
