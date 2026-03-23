@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { DM_Serif_Text } from "next/font/google";
 import { supabase } from "@/lib/supabaseClients";
 
@@ -13,10 +14,12 @@ const dmSerifText = DM_Serif_Text({
 
 type Profile = {
     username: string | null;
+    saldo: number | null;
 };
 
 const Navbar = () => {
     const [username, setUsername] = useState<string | null>(null);
+    const [saldo, setSaldo] = useState<number>(0);
 
     useEffect(() => {
         let isMounted = true;
@@ -26,20 +29,26 @@ const Navbar = () => {
 
             if (!session?.user) {
                 if (isMounted) setUsername(null);
+                if (isMounted) setSaldo(0);
                 return;
             }
 
             const { data } = await supabase
                 .from("profiles")
-                .select("username")
-                .eq("id", "64e8af21-12d0-430b-9f83-d7a4025fd8aa")
+                .select("username, saldo")
+                .eq("id", session.user.id)
                 .maybeSingle<Profile>();
 
             if (!isMounted) return;
 
-            console.log(data?.username);
+            setUsername(
+                data?.username ||
+                session.user.user_metadata?.username ||
+                session.user.email ||
+                "User"
+            );
 
-            setUsername(data?.username || session.user.email || "User");
+            setSaldo(data?.saldo || 0);
         };
 
         void loadUserProfile();
@@ -47,19 +56,27 @@ const Navbar = () => {
         const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
             if (!session?.user) {
                 if (isMounted) setUsername(null);
+                if (isMounted) setSaldo(0);
                 return;
             }
 
             void (async () => {
                 const { data } = await supabase
                     .from("profiles")
-                    .select("username")
+                    .select("username, saldo")
                     .eq("id", session.user.id)
                     .maybeSingle<Profile>();
 
                 if (!isMounted) return;
 
-                setUsername(data?.username || session.user.email || "User");
+                setUsername(
+                    data?.username ||
+                    session.user.user_metadata?.username ||
+                    session.user.email ||
+                    "User"
+                );
+
+                setSaldo(data?.saldo || 0);
             })();
         });
 
@@ -78,9 +95,21 @@ const Navbar = () => {
             </ul>
             <ul className="flex gap-4">
                 {username ? (
-                    <li className="px-5 py-1 rounded-lg text-true-gold border border-true-gold/40">
-                        {username}
-                    </li>
+                    <>
+                        <li className="px-5 py-1 text-true-gold border border-true-gold rounded-lg">
+                            {saldo.toFixed(2)} €
+                        </li>
+
+                        <li>
+                            <Image
+                                src="/icondefault.png"
+                                alt="User avatar"
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 rounded-full object-cover object-[center_30%]"
+                            />
+                        </li>
+                    </>
                 ) : (
                     <>
                         <li>

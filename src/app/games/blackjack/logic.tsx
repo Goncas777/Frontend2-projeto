@@ -1,9 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClients";
 
 const suits = ['♥', '♦', '♣', '♠'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+const getBalance = async (): Promise<number> => {
+    const {data: {session}}
+        = await supabase.auth.getSession();
+
+        if (!session?.user) {
+            return 0;
+        }
+        
+    const { data } = await supabase
+        .from("profiles")
+        .select("saldo")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+    return data?.saldo || 0;
+};
 
 type Card = {
   suit: string;
