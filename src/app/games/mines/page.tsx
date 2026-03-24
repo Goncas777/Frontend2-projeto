@@ -1,16 +1,14 @@
-import { Hands } from "./logic";
+import MinesGame from "./logic";
 
-const Blackjack = () => {
-
+const Minegame = () => {
     return (
         <div
-            id="blackjack-table"
             className="relative w-full bg-cover bg-center"
             style={{ backgroundImage: `url(/BlackjackDealer.WebP)`, minHeight: '100vh' }}
         >
-            <Hands />
+            <MinesGame />
         </div>
     );
 }
 
-export default Blackjack;
+export default Minegame;

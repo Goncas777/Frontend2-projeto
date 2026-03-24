@@ -140,7 +140,7 @@ export default function SignIn() {
         
         <p className="text-center mt-6 text-gray-500 text-sm">
           Don't have an account?{" "}
-          <a href="/register" className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
+          <a onClick={() => router.push("/register")} className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
             Register
           </a>
         </p>

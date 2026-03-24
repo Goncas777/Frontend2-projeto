@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DM_Serif_Text } from "next/font/google";
 import { supabase } from "@/lib/supabaseClients";
+import { useRouter } from "next/navigation";
 
 const dmSerifText = DM_Serif_Text({
     subsets: ["latin"],
@@ -11,6 +12,7 @@ const dmSerifText = DM_Serif_Text({
 });
 
 export default function Register() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
@@ -188,7 +190,7 @@ export default function Register() {
         
         <p className="text-center mt-6 text-gray-500 text-sm">
           Already a member?{" "}
-          <a href="/signin" className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
+          <a onClick={() => router.push("/signin")} className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
             Sign In
           </a>
         </p>

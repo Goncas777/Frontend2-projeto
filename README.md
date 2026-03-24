@@ -16,6 +16,40 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Stripe Sandbox Deposits (Navbar)
+
+The Navbar now includes a `Depositar` button for authenticated users.
+
+### 1) Configure environment variables
+
+Copy `.env.example` to `.env.local` and fill in your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `STRIPE_SECRET_KEY` (test secret key)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test public key)
+- `NEXT_PUBLIC_SITE_URL` (e.g. `http://localhost:3000`)
+
+### 2) Start app
+
+```bash
+npm run dev
+```
+
+### 3) Test deposit flow
+
+1. Sign in.
+2. Click `Depositar` in the Navbar.
+3. Enter amount and continue to Stripe Checkout.
+4. Complete payment with Stripe test card (`4242 4242 4242 4242`, any future date, any CVC).
+5. After redirect, the app confirms payment and updates `profiles.saldo` in Supabase.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,10 +1,14 @@
+"use client";
+
 const gameNames = ["Roulette", "Mines", "Blackjack", "Slots"];
+import { useRouter } from "next/navigation";
 
 const Card = () => {
+    const router = useRouter();
     return (
         <>
             {gameNames.map((game) => (
-                <a href={`/games/${game.toLowerCase()}`}>
+                <a onClick={() => router.push(`/games/${game.toLowerCase()}`)}>
                 <div
                     key={game}
                     className="group relative w-100 h-60 bg-cover bg-center rounded-lg shadow-lg border border-gray-600 overflow-hidden cursor-pointer"
@@ -21,7 +25,7 @@ const Card = () => {
                 </a>
             ))}
             {gameNames.reverse().map((game) => (
-                <a href={`/games/${game.toLowerCase()}`}>
+                <a onClick={() => router.push(`/games/${game.toLowerCase()}`)}>
                 <div
                     key={game}
                     className="group relative w-100 h-60 bg-cover bg-center rounded-lg shadow-lg border border-gray-600 overflow-hidden cursor-pointer"
