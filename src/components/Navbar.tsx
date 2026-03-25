@@ -114,7 +114,7 @@ const Navbar = () => {
         }
 
         if (depositStatus === "cancelled") {
-            setDepositMessage("Deposito cancelado.");
+            setDepositMessage("Deposit cancelled.");
             setDepositError(null);
             router.replace(pathname);
             return;
@@ -131,7 +131,7 @@ const Navbar = () => {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (!session?.access_token) {
-                    setDepositError("Sessao expirada. Inicia sessao novamente.");
+                    setDepositError("Session expired. Please sign in again.");
                     return;
                 }
 
@@ -152,7 +152,7 @@ const Navbar = () => {
                 };
 
                 if (!response.ok || !result.ok) {
-                    setDepositError(result.message || "Nao foi possivel confirmar o deposito.");
+                    setDepositError(result.message || "Could not confirm the deposit.");
                     return;
                 }
 
@@ -163,9 +163,9 @@ const Navbar = () => {
                     );
                 }
 
-                setDepositMessage(result.alreadyCredited ? "Deposito ja confirmado." : "Deposito confirmado com sucesso.");
+                setDepositMessage(result.alreadyCredited ? "Deposit already confirmed." : "Deposit confirmed successfully.");
             } catch {
-                setDepositError("Erro ao confirmar deposito. Tenta novamente.");
+                setDepositError("Error confirming deposit. Please try again.");
             } finally {
                 setIsConfirmingDeposit(false);
                 router.replace(pathname);
@@ -181,13 +181,13 @@ const Navbar = () => {
 
         const amount = Number(depositAmount);
         if (!Number.isFinite(amount) || amount < 1) {
-            setDepositError("Valor invalido. Deposita no minimo 1€.");
+            setDepositError("Invalid amount. Minimum deposit is 1€.");
             return;
         }
 
         const { data: { session } } = await supabase.auth.getSession();
         if (!session?.access_token) {
-            setDepositError("Sessao expirada. Inicia sessao novamente.");
+            setDepositError("Session expired. Please sign in again.");
             return;
         }
 
@@ -205,20 +205,20 @@ const Navbar = () => {
 
             const result = (await response.json()) as { url?: string; message?: string };
             if (!response.ok || !result.url) {
-                setDepositError(result.message || "Erro ao iniciar pagamento Stripe.");
+                setDepositError(result.message || "Could not start Stripe checkout.");
                 return;
             }
 
             window.location.assign(result.url);
         } catch {
-            setDepositError("Erro de ligacao ao Stripe. Tenta novamente.");
+            setDepositError("Connection error with Stripe. Please try again.");
         } finally {
             setIsCreatingCheckout(false);
         }
     };
 
     return (
-        <nav className={`flex justify-between p-4 px-12 text-white border-b border-gray-600 ${dmSerifText.className}`}>
+        <nav className={`sticky top-0 z-50 flex justify-between border-b border-true-gold/30 bg-black/70 p-4 px-6 text-white backdrop-blur-md sm:px-12 ${dmSerifText.className}`}>
             <ul className={`${dmSerifText.className} `}>
                 <li>
                     <button
@@ -243,14 +243,14 @@ const Navbar = () => {
                                 }}
                                 className="px-5 py-1 bg-true-gold hover:opacity-80 rounded-lg text-black font-semibold"
                             >
-                                Depositar
+                                Deposit
                             </button>
 
                             {showDepositPanel && (
-                                <div className="absolute right-0 mt-3 w-72 rounded-xl border border-true-gold/40 bg-black/95 p-4 shadow-[0_0_25px_rgba(212,175,55,0.2)]">
-                                    <p className="text-sm font-semibold text-true-gold">Depositar saldo</p>
+                                <div className="absolute right-0 z-[70] mt-3 w-72 rounded-xl border border-true-gold/40 bg-black/95 p-4 shadow-[0_0_25px_rgba(212,175,55,0.2)]">
+                                    <p className="text-sm font-semibold text-true-gold">Deposit Funds</p>
                                     <div className="mt-3">
-                                        <label htmlFor="deposit-amount" className="text-xs text-gray-300 uppercase tracking-wide">Valor (€)</label>
+                                        <label htmlFor="deposit-amount" className="text-xs text-gray-300 uppercase tracking-wide">Amount (€)</label>
                                         <input
                                             id="deposit-amount"
                                             type="number"
@@ -284,7 +284,7 @@ const Navbar = () => {
                                         disabled={isCreatingCheckout || isConfirmingDeposit}
                                         className="mt-4 w-full rounded-lg bg-true-gold px-3 py-2 text-sm font-bold text-black hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {isCreatingCheckout ? "A abrir Stripe..." : isConfirmingDeposit ? "A confirmar..." : "Ir para Checkout"}
+                                        {isCreatingCheckout ? "Opening Stripe..." : isConfirmingDeposit ? "Confirming..." : "Go to Checkout"}
                                     </button>
                                 </div>
                             )}

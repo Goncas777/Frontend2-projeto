@@ -20,7 +20,7 @@ const getBalance = async (): Promise<number> => {
 const updateBalance = async (newBalance: number): Promise<{ ok: boolean; message?: string }> => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) {
-        return { ok: false, message: "Sessao expirada. Volta a iniciar sessao." };
+        return { ok: false, message: "Session expired. Please sign in again." };
     }
 
     const { error } = await supabase
@@ -58,6 +58,18 @@ const MinesGame = () => {
         window.dispatchEvent(
             new CustomEvent<number>("balance-updated", { detail: nextBalance })
         );
+    };
+
+    const focusGameArea = () => {
+        const gameSection = document.getElementById("mines-table");
+        if (!gameSection) return;
+
+        requestAnimationFrame(() => {
+            gameSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        });
     };
 
     const getMultiplier = (revealedCount: number): number => {
@@ -104,12 +116,12 @@ const MinesGame = () => {
         const parsedBet = Number(betAmount);
 
         if (!Number.isFinite(parsedBet) || parsedBet <= 0) {
-            setErrorMessage("Aposta invalida. Introduz um valor maior que 0.");
+            setErrorMessage("Invalid bet. Enter a value greater than 0.");
             return;
         }
 
         if (parsedBet > balance) {
-            setErrorMessage("Nao podes apostar mais do que o teu saldo.");
+            setErrorMessage("You cannot bet more than your balance.");
             return;
         }
 
@@ -122,6 +134,7 @@ const MinesGame = () => {
         setCurrentBet(parsedBet);
         setGamePhase("playing");
         setErrorMessage(null);
+        focusGameArea();
     };
 
     const handleCellClick = async (cellIndex: number) => {
@@ -135,12 +148,10 @@ const MinesGame = () => {
         setTimeout(() => setAnimatingCells(new Set()), 500);
 
         if (mines.includes(cellIndex)) {
-            // Perdeu!
             setRevealed(newRevealed);
             setGamePhase("lost");
-            await settleRound("lose", "BOMBA! Perdeste a tua aposta!");
+            await settleRound("lose", "Boom! You hit a mine.");
         } else {
-            // Célula segura
             setRevealed(newRevealed);
             const newMultiplier = getMultiplier(newRevealed.size - 1);
             setSelectedMultiplier(newMultiplier);
@@ -155,7 +166,7 @@ const MinesGame = () => {
 
         setGameWon(true);
         setGamePhase("won");
-        await settleRound("win", `GANHO! +${profitAmount.toFixed(2)}€`);
+        await settleRound("win", `WIN! +${profitAmount.toFixed(2)}€`);
 
         const updateResult = await updateBalance(newBalance);
         if (updateResult.ok) {
@@ -164,10 +175,9 @@ const MinesGame = () => {
         }
     };
 
-    const settleRound = async (result: "win" | "lose", message: string) => {
+    const settleRound = async (result: "win" | "lose", _message: string) => {
         if (isSettlingResult) return;
         setIsSettlingResult(true);
-        // Delay para mostrar a mensagem
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         if (result === "lose") {
@@ -195,6 +205,7 @@ const MinesGame = () => {
                     onClick={() => {
                         setErrorMessage(null);
                         setGamePhase("bet");
+                        focusGameArea();
                     }}
                     className="group relative overflow-hidden rounded-2xl border border-true-gold/50 bg-black/60 px-14 py-7 text-3xl font-extrabold uppercase tracking-[0.2em] text-true-gold shadow-[0_0_30px_rgba(212,175,55,0.2)] transition-all duration-300 hover:scale-[1.03] hover:bg-true-gold hover:text-black"
                 >
@@ -210,10 +221,10 @@ const MinesGame = () => {
             <div className="absolute inset-0 flex items-end justify-end p-6 md:p-10">
                 <div className="w-full max-w-md rounded-2xl border border-true-gold/35 bg-gradient-to-b from-black/85 via-zinc-950/85 to-black/80 p-7 shadow-[0_0_35px_rgba(212,175,55,0.16)] backdrop-blur-sm">
                     <h3 className="text-center text-2xl font-bold uppercase tracking-[0.14em] text-true-gold">Place Your Bet</h3>
-                    <p className="mt-2 text-center text-sm text-gray-300">Saldo disponivel: <span className="font-semibold text-true-gold">{balance.toFixed(2)} €</span></p>
+                    <p className="mt-2 text-center text-sm text-gray-300">Available Balance: <span className="font-semibold text-true-gold">{balance.toFixed(2)} €</span></p>
 
                     <div className="mt-6">
-                        <label htmlFor="bet-amount" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">Valor da aposta</label>
+                        <label htmlFor="bet-amount" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">Bet Amount</label>
                         <div className="relative">
                             <input
                                 id="bet-amount"
@@ -240,6 +251,14 @@ const MinesGame = () => {
                                 {quickBet} €
                             </button>
                         ))}
+                        <button
+                            type="button"
+                            onClick={() => setBetAmount(balance.toFixed(2))}
+                            disabled={balance <= 0}
+                            className="rounded-md border border-green-500/60 px-3 py-1 text-xs font-semibold text-green-300 transition-colors hover:bg-green-500 hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            All In
+                        </button>
                     </div>
 
                     {errorMessage && <span className="mt-4 block text-sm text-red-400">{errorMessage}</span>}
@@ -280,7 +299,7 @@ const MinesGame = () => {
                         ? "border-green-400/80 bg-gradient-to-br from-green-950/60 via-black/80 to-green-950/60 shadow-[0_0_40px_rgba(74,222,128,0.4)]" 
                         : "border-true-gold/60 bg-gradient-to-br from-yellow-950/40 via-black/80 to-true-gold/20 shadow-[0_0_40px_rgba(212,175,55,0.3)]"
                 }`}>
-                    <div className="text-xs uppercase tracking-widest text-true-gold/80 font-semibold">Multiplicador Atual</div>
+                    <div className="text-xs uppercase tracking-widest text-true-gold/80 font-semibold">Current Multiplier</div>
                     <div className={`mt-2 text-4xl sm:text-5xl lg:text-6xl font-black transition-all duration-300 ${
                         gameWon 
                             ? "text-green-300 drop-shadow-lg" 
@@ -291,11 +310,10 @@ const MinesGame = () => {
                         {selectedMultiplier.toFixed(2)}x
                     </div>
                     <div className="mt-2 text-sm text-gray-300">
-                        Lucro Potencial: <span className={selectedMultiplier > 1 ? "font-bold text-true-gold" : ""}>{potentialProfit.toFixed(2)}€</span>
+                        Potential Profit: <span className={selectedMultiplier > 1 ? "font-bold text-true-gold" : ""}>{potentialProfit.toFixed(2)}€</span>
                     </div>
                 </div>
 
-                {/* Grid de Minas */}
                 <div className="mb-4 rounded-2xl border border-true-gold/35 bg-gradient-to-b from-black/85 via-zinc-950/85 to-black/80 p-4 sm:mb-6 sm:p-5 shadow-[0_0_35px_rgba(212,175,55,0.16)]">
                     <div className="grid grid-cols-5 gap-2 sm:gap-3">
                         {[...Array(totalCells)].map((_, index) => {
@@ -331,11 +349,10 @@ const MinesGame = () => {
                     </div>
                 </div>
 
-                {/* Info e Botões */}
                 <div className="sticky bottom-0 z-10 flex flex-col gap-3 rounded-xl border border-true-gold/20 bg-black/65 p-3 backdrop-blur-sm">
                     <div className="text-center text-sm text-gray-300">
-                        <p>Aposta: <span className="font-bold text-true-gold">{currentBet.toFixed(2)}€</span> | Saldo: <span className="font-bold text-true-gold">{balance.toFixed(2)}€</span></p>
-                        <p className="mt-1 text-xs text-gray-400">Células seguras reveladas: {revealed.size} / {totalCells - numMines}</p>
+                        <p>Bet: <span className="font-bold text-true-gold">{currentBet.toFixed(2)}€</span> | Balance: <span className="font-bold text-true-gold">{balance.toFixed(2)}€</span></p>
+                        <p className="mt-1 text-xs text-gray-400">Safe cells revealed: {revealed.size} / {totalCells - numMines}</p>
                     </div>
 
                     {gamePhase === "playing" && (
@@ -345,7 +362,7 @@ const MinesGame = () => {
                             className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-3 font-bold text-black transition-all duration-200 hover:from-green-400 hover:to-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
                         >
                             <span className="text-base sm:text-lg">
-                                💰 Sacar Lucro ({potentialProfit.toFixed(2)}€)
+                                Cash Out ({potentialProfit.toFixed(2)}€)
                             </span>
                         </button>
                     )}
@@ -357,13 +374,13 @@ const MinesGame = () => {
                                     ? "bg-green-950/60 border border-green-400 text-green-300 shadow-[0_0_20px_rgba(74,222,128,0.4)]"
                                     : "bg-red-950/60 border border-red-400 text-red-300 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
                             }`}>
-                                {gamePhase === "won" ? `🎉 GANHO! +${potentialProfit.toFixed(2)}€` : "💥 PERDESTE!"}
+                                {gamePhase === "won" ? `You won +${potentialProfit.toFixed(2)}€` : "You lost"}
                             </div>
                             <button
                                 onClick={playAgain}
                                 className="w-full rounded-lg bg-true-gold px-6 py-2 font-bold text-black transition-all duration-200 hover:opacity-85"
                             >
-                                Jogar Novamente
+                                Play Again
                             </button>
                         </div>
                     )}

@@ -1,8 +1,8 @@
-import MinesGame from "./logic";
+import RouletteGame from "./logic";
 
-const Minegame = () => {
+const RoulettePage = () => {
     return (
-        <div id="mines-table" className="relative w-full overflow-hidden" style={{ minHeight: "calc(100dvh - 72px)" }}>
+        <div id="roulette-table" className="relative w-full overflow-hidden" style={{ minHeight: "calc(100dvh - 72px)" }}>
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 bg-black"
@@ -15,10 +15,10 @@ const Minegame = () => {
                 }}
             />
             <div className="relative z-10" style={{ minHeight: "calc(100dvh - 72px)" }}>
-                <MinesGame />
+                <RouletteGame />
             </div>
         </div>
     );
-}
+};
 
-export default Minegame;
+export default RoulettePage;

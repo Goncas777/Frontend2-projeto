@@ -23,31 +23,31 @@ const getSupabaseWithToken = (accessToken: string) =>
 export async function POST(request: Request) {
   try {
     if (!supabaseUrl || !supabaseAnonKey) {
-      return NextResponse.json({ message: "Faltam variaveis de ambiente do Supabase." }, { status: 500 });
+      return NextResponse.json({ message: "Missing Supabase environment variables." }, { status: 500 });
     }
 
     const stripe = getStripeClient();
     if (!stripe) {
-      return NextResponse.json({ message: "Falta STRIPE_SECRET_KEY." }, { status: 500 });
+      return NextResponse.json({ message: "Missing STRIPE_SECRET_KEY." }, { status: 500 });
     }
 
     const authHeader = request.headers.get("authorization");
     const accessToken = authHeader?.replace("Bearer ", "").trim();
 
     if (!accessToken) {
-      return NextResponse.json({ message: "Sem autenticacao." }, { status: 401 });
+      return NextResponse.json({ message: "Missing authentication." }, { status: 401 });
     }
 
     const body = (await request.json()) as { amount?: number };
     const amount = Number(body.amount);
 
     if (!Number.isFinite(amount) || amount < 1) {
-      return NextResponse.json({ message: "Valor de deposito invalido." }, { status: 400 });
+      return NextResponse.json({ message: "Invalid deposit amount." }, { status: 400 });
     }
 
     const amountCents = Math.round(amount * 100);
     if (amountCents < 100) {
-      return NextResponse.json({ message: "Deposita no minimo 1€." }, { status: 400 });
+      return NextResponse.json({ message: "Minimum deposit is 1€." }, { status: 400 });
     }
 
     const supabase = getSupabaseWithToken(accessToken);
@@ -57,12 +57,12 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      return NextResponse.json({ message: "Sessao invalida." }, { status: 401 });
+      return NextResponse.json({ message: "Invalid session." }, { status: 401 });
     }
 
     const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_SITE_URL;
     if (!origin) {
-      return NextResponse.json({ message: "Nao foi possivel determinar o URL da aplicacao." }, { status: 500 });
+      return NextResponse.json({ message: "Could not determine application URL." }, { status: 500 });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -76,8 +76,8 @@ export async function POST(request: Request) {
             currency: "eur",
             unit_amount: amountCents,
             product_data: {
-              name: "Deposito de Saldo - Royelle",
-              description: "Saldo para jogos",
+              name: "Balance Deposit - Royelle",
+              description: "Gaming balance top-up",
             },
           },
         },
@@ -90,12 +90,12 @@ export async function POST(request: Request) {
     });
 
     if (!session.url) {
-      return NextResponse.json({ message: "Nao foi possivel iniciar o checkout." }, { status: 500 });
+      return NextResponse.json({ message: "Could not start checkout." }, { status: 500 });
     }
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erro interno";
+    const message = error instanceof Error ? error.message : "Internal error";
     return NextResponse.json({ message }, { status: 500 });
   }
 }

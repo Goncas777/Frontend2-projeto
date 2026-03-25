@@ -37,23 +37,22 @@ export default function Register() {
     setMessage("");
     setMessageType("");
 
-    // Validações
     if (!formData.username.trim()) {
-      setMessage("Por favor, insira um username");
+      setMessage("Please enter a username");
       setMessageType("error");
       setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setMessage("As passwords não coincidem");
+      setMessage("Passwords do not match");
       setMessageType("error");
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setMessage("A password deve ter pelo menos 6 caracteres");
+      setMessage("Password must have at least 6 characters");
       setMessageType("error");
       setLoading(false);
       return;
@@ -65,13 +64,12 @@ export default function Register() {
     });
 
     if (error) {
-      setMessage("Erro: " + error.message);
+      setMessage("Error: " + error.message);
       setMessageType("error");
       setLoading(false);
       return;
     }
 
-    // Criar perfil do utilizador
     if (data.user) {
       const { error: profileError } = await supabase.from("profiles").insert([
         {
@@ -82,10 +80,10 @@ export default function Register() {
       ]);
 
       if (profileError) {
-        setMessage("Conta criada mas erro ao criar perfil: " + profileError.message);
+        setMessage("Account created but profile setup failed: " + profileError.message);
         setMessageType("error");
       } else {
-        setMessage("Conta criada com sucesso! Verifica o email 📩");
+        setMessage("Account created successfully. Check your email.");
         setMessageType("success");
         setFormData({ username: "", email: "", password: "", confirmPassword: "" });
       }
@@ -179,7 +177,7 @@ export default function Register() {
           disabled={loading}
           className="w-full py-3 bg-gradient-to-r from-true-gold via-amber-600 to-true-gold text-black font-bold rounded-lg hover:from-amber-500 hover:via-true-gold hover:to-amber-500 transition-all duration-300 shadow-lg shadow-true-gold/20 hover:shadow-true-gold/40 uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "A criar..." : "Create Account"}
+          {loading ? "Creating..." : "Create Account"}
         </button>
 
         {message && (

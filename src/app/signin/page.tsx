@@ -35,16 +35,15 @@ export default function SignIn() {
     setMessage("");
     setMessageType("");
 
-    // Validações
     if (!formData.email.trim()) {
-      setMessage("Por favor, insira o email");
+      setMessage("Please enter your email");
       setMessageType("error");
       setLoading(false);
       return;
     }
 
     if (!formData.password) {
-      setMessage("Por favor, insira a password");
+      setMessage("Please enter your password");
       setMessageType("error");
       setLoading(false);
       return;
@@ -56,18 +55,17 @@ export default function SignIn() {
     });
 
     if (error) {
-      setMessage("Erro: " + error.message);
+      setMessage("Error: " + error.message);
       setMessageType("error");
       setLoading(false);
       return;
     }
 
     if (data.user) {
-      setMessage("Login realizado com sucesso! 🎉");
+      setMessage("Signed in successfully.");
       setMessageType("success");
       setFormData({ email: "", password: "" });
-      
-      // Redirecionar para a página principal após 1 segundo
+
       setTimeout(() => {
         router.push("/");
       }, 1000);
@@ -129,7 +127,7 @@ export default function SignIn() {
           disabled={loading}
           className="w-full py-3 bg-gradient-to-r from-true-gold via-amber-600 to-true-gold text-black font-bold rounded-lg hover:from-amber-500 hover:via-true-gold hover:to-amber-500 transition-all duration-300 shadow-lg shadow-true-gold/20 hover:shadow-true-gold/40 uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "A conectar..." : "Sign In"}
+          {loading ? "Connecting..." : "Sign In"}
         </button>
 
         {message && (

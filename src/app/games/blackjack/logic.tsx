@@ -27,7 +27,7 @@ const updateBalance = async (newBalance: number): Promise<{ ok: boolean; message
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user) {
-        return { ok: false, message: "Sessao expirada. Volta a iniciar sessao." };
+        return { ok: false, message: "Session expired. Please sign in again." };
     }
 
     const { error } = await supabase
@@ -120,13 +120,15 @@ const Hands = () => {
         );
     };
 
-    const scrollToGame = () => {
+    const focusGame = () => {
         const gameSection = document.getElementById("blackjack-table");
         if (!gameSection) return;
 
-        gameSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
+        requestAnimationFrame(() => {
+            gameSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
         });
     };
 
@@ -201,7 +203,7 @@ const Hands = () => {
             broadcastBalanceUpdate(newBalance);
             setErrorMessage(null);
         } else {
-            setErrorMessage(updateResult.message || "Nao foi possivel atualizar o saldo. Tenta novamente.");
+            setErrorMessage(updateResult.message || "Could not update balance. Please try again.");
         }
 
         setIsSettlingResult(false);
@@ -211,12 +213,12 @@ const Hands = () => {
         const parsedBet = Number(betAmount);
 
         if (!Number.isFinite(parsedBet) || parsedBet <= 0) {
-            setErrorMessage("Aposta invalida. Introduz um valor maior que 0.");
+            setErrorMessage("Invalid bet. Enter a value greater than 0.");
             return;
         }
 
         if (parsedBet > balance) {
-            setErrorMessage("Nao podes apostar mais do que o teu saldo.");
+            setErrorMessage("You cannot bet more than your balance.");
             return;
         }
 
@@ -228,6 +230,7 @@ const Hands = () => {
         setErrorMessage(null);
         setCurrentBet(parsedBet);
         setGamePhase("playing");
+        focusGame();
     };
 
     const hit = async () => {
@@ -269,7 +272,7 @@ const Hands = () => {
                     onClick={() => {
                         setErrorMessage(null);
                         setGamePhase("bet");
-                        scrollToGame();
+                        focusGame();
                     }}
                     className="group relative overflow-hidden rounded-2xl border border-true-gold/50 bg-black/60 px-14 py-7 text-3xl font-extrabold uppercase tracking-[0.2em] text-true-gold shadow-[0_0_30px_rgba(212,175,55,0.2)] transition-all duration-300 hover:scale-[1.03] hover:bg-true-gold hover:text-black"
                 >
@@ -285,10 +288,10 @@ const Hands = () => {
             <div className="absolute inset-0 flex items-end justify-end p-6 md:p-10">
                 <div className="w-full max-w-md rounded-2xl border border-true-gold/35 bg-gradient-to-b from-black/85 via-zinc-950/85 to-black/80 p-7 shadow-[0_0_35px_rgba(212,175,55,0.16)] backdrop-blur-sm">
                     <h3 className="text-center text-2xl font-bold uppercase tracking-[0.14em] text-true-gold">Place Your Bet</h3>
-                    <p className="mt-2 text-center text-sm text-gray-300">Saldo disponivel: <span className="font-semibold text-true-gold">{balance.toFixed(2)} €</span></p>
+                    <p className="mt-2 text-center text-sm text-gray-300">Available Balance: <span className="font-semibold text-true-gold">{balance.toFixed(2)} €</span></p>
 
                     <div className="mt-6">
-                        <label htmlFor="bet-amount" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">Valor da aposta</label>
+                        <label htmlFor="bet-amount" className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">Bet Amount</label>
                         <div className="relative">
                             <input
                                 id="bet-amount"
@@ -315,6 +318,14 @@ const Hands = () => {
                                 {quickBet} €
                             </button>
                         ))}
+                        <button
+                            type="button"
+                            onClick={() => setBetAmount(balance.toFixed(2))}
+                            disabled={balance <= 0}
+                            className="rounded-md border border-green-500/60 px-3 py-1 text-xs font-semibold text-green-300 transition-colors hover:bg-green-500 hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            All In
+                        </button>
                     </div>
 
                     {errorMessage && <span className="mt-4 block text-sm text-red-400">{errorMessage}</span>}

@@ -23,26 +23,26 @@ const getSupabaseWithToken = (accessToken: string) =>
 export async function POST(request: Request) {
   try {
     if (!supabaseUrl || !supabaseAnonKey) {
-      return NextResponse.json({ message: "Faltam variaveis de ambiente do Supabase." }, { status: 500 });
+      return NextResponse.json({ message: "Missing Supabase environment variables." }, { status: 500 });
     }
 
     const stripe = getStripeClient();
     if (!stripe) {
-      return NextResponse.json({ message: "Falta STRIPE_SECRET_KEY." }, { status: 500 });
+      return NextResponse.json({ message: "Missing STRIPE_SECRET_KEY." }, { status: 500 });
     }
 
     const authHeader = request.headers.get("authorization");
     const accessToken = authHeader?.replace("Bearer ", "").trim();
 
     if (!accessToken) {
-      return NextResponse.json({ message: "Sem autenticacao." }, { status: 401 });
+      return NextResponse.json({ message: "Missing authentication." }, { status: 401 });
     }
 
     const body = (await request.json()) as { sessionId?: string };
     const sessionId = body.sessionId?.trim();
 
     if (!sessionId) {
-      return NextResponse.json({ message: "Session ID em falta." }, { status: 400 });
+      return NextResponse.json({ message: "Missing session ID." }, { status: 400 });
     }
 
     const supabase = getSupabaseWithToken(accessToken);
@@ -52,13 +52,13 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      return NextResponse.json({ message: "Sessao invalida." }, { status: 401 });
+      return NextResponse.json({ message: "Invalid session." }, { status: 401 });
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== "paid") {
-      return NextResponse.json({ message: "Pagamento ainda nao concluido." }, { status: 400 });
+      return NextResponse.json({ message: "Payment not completed yet." }, { status: 400 });
     }
 
     if (session.metadata?.credited === "true") {
@@ -67,14 +67,14 @@ export async function POST(request: Request) {
 
     const userIdFromMetadata = session.metadata?.userId;
     if (!userIdFromMetadata || userIdFromMetadata !== user.id) {
-      return NextResponse.json({ message: "Sessao de pagamento invalida para este utilizador." }, { status: 403 });
+      return NextResponse.json({ message: "Invalid payment session for this user." }, { status: 403 });
     }
 
     const amountCents = Number(session.metadata?.amountCents || session.amount_total || 0);
     const amount = amountCents / 100;
 
     if (!Number.isFinite(amount) || amount <= 0) {
-      return NextResponse.json({ message: "Valor de deposito invalido." }, { status: 400 });
+      return NextResponse.json({ message: "Invalid deposit amount." }, { status: 400 });
     }
 
     const { data: profile, error: profileError } = await supabase
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, amount, nextBalance });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erro interno";
+    const message = error instanceof Error ? error.message : "Internal error";
     return NextResponse.json({ message }, { status: 500 });
   }
 }
