@@ -4,7 +4,7 @@ const Minegame = () => {
     return (
         <div
             className="relative w-full bg-cover bg-center"
-            style={{ backgroundImage: `url(/BlackjackDealer.WebP)`, minHeight: '100vh' }}
+            style={{ backgroundImage: `url(/background.png)`, minHeight: "100dvh" }}
         >
             <MinesGame />
         </div>

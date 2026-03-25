@@ -150,12 +150,12 @@ const MinesGame = () => {
     const cashOut = async () => {
         if (gamePhase !== "playing" || isSettlingResult) return;
 
-        const winAmount = currentBet * selectedMultiplier;
-        const newBalance = balance + winAmount;
+        const profitAmount = Math.max(0, currentBet * (selectedMultiplier - 1));
+        const newBalance = balance + profitAmount;
 
         setGameWon(true);
         setGamePhase("won");
-        await settleRound("win", `GANHO! +${(winAmount).toFixed(2)}€`);
+        await settleRound("win", `GANHO! +${profitAmount.toFixed(2)}€`);
 
         const updateResult = await updateBalance(newBalance);
         if (updateResult.ok) {
@@ -270,18 +270,18 @@ const MinesGame = () => {
     const isMine = (index: number) => mines.includes(index);
     const isRevealed = (index: number) => revealed.has(index);
     const isAnimating = (index: number) => animatingCells.has(index);
+    const potentialProfit = Math.max(0, currentBet * (selectedMultiplier - 1));
 
     return (
-        <div className={`${dmSerifText.variable} absolute inset-0 flex items-center justify-center p-6 ${dmSerifText.className}`}>
-            <div className="w-full max-w-2xl">
-                {/* Multiplicador - Casino Style */}
-                <div className={`mb-6 rounded-2xl border-2 p-6 text-center transition-all duration-300 ${
+        <div className={`${dmSerifText.variable} absolute inset-x-0 top-0 bottom-0 overflow-y-auto px-4 pt-2 pb-4 sm:px-6 sm:pt-2 ${dmSerifText.className}`}>
+            <div className="mx-auto flex min-h-full w-full max-w-lg flex-col justify-start sm:justify-center">
+                <div className={`mb-4 rounded-2xl border-2 p-4 sm:mb-6 sm:p-6 text-center transition-all duration-300 ${
                     gameWon 
                         ? "border-green-400/80 bg-gradient-to-br from-green-950/60 via-black/80 to-green-950/60 shadow-[0_0_40px_rgba(74,222,128,0.4)]" 
                         : "border-true-gold/60 bg-gradient-to-br from-yellow-950/40 via-black/80 to-true-gold/20 shadow-[0_0_40px_rgba(212,175,55,0.3)]"
                 }`}>
                     <div className="text-xs uppercase tracking-widest text-true-gold/80 font-semibold">Multiplicador Atual</div>
-                    <div className={`mt-2 text-6xl font-black transition-all duration-300 ${
+                    <div className={`mt-2 text-4xl sm:text-5xl lg:text-6xl font-black transition-all duration-300 ${
                         gameWon 
                             ? "text-green-300 drop-shadow-lg" 
                             : selectedMultiplier > 5
@@ -291,13 +291,13 @@ const MinesGame = () => {
                         {selectedMultiplier.toFixed(2)}x
                     </div>
                     <div className="mt-2 text-sm text-gray-300">
-                        Ganhos Potenciais: <span className={selectedMultiplier > 1 ? "font-bold text-true-gold" : ""}>{(currentBet * selectedMultiplier).toFixed(2)}€</span>
+                        Lucro Potencial: <span className={selectedMultiplier > 1 ? "font-bold text-true-gold" : ""}>{potentialProfit.toFixed(2)}€</span>
                     </div>
                 </div>
 
                 {/* Grid de Minas */}
-                <div className="mb-6 rounded-2xl border border-true-gold/35 bg-gradient-to-b from-black/85 via-zinc-950/85 to-black/80 p-6 shadow-[0_0_35px_rgba(212,175,55,0.16)]">
-                    <div className="grid grid-cols-5 gap-3">
+                <div className="mb-4 rounded-2xl border border-true-gold/35 bg-gradient-to-b from-black/85 via-zinc-950/85 to-black/80 p-4 sm:mb-6 sm:p-5 shadow-[0_0_35px_rgba(212,175,55,0.16)]">
+                    <div className="grid grid-cols-5 gap-2 sm:gap-3">
                         {[...Array(totalCells)].map((_, index) => {
                             const revealed_cell = isRevealed(index);
                             const is_mine = isMine(index);
@@ -308,7 +308,7 @@ const MinesGame = () => {
                                     key={index}
                                     onClick={() => handleCellClick(index)}
                                     disabled={revealed_cell || gamePhase !== "playing" || isSettlingResult}
-                                    className={`relative aspect-square rounded-lg font-bold text-lg transition-all duration-300 ${
+                                    className={`relative aspect-square rounded-md sm:rounded-lg font-bold text-sm sm:text-base transition-all duration-300 ${
                                         is_animating ? "scale-95" : "scale-100"
                                     } ${
                                         revealed_cell ? "animate-cell-reveal" : ""
@@ -332,7 +332,7 @@ const MinesGame = () => {
                 </div>
 
                 {/* Info e Botões */}
-                <div className="flex flex-col gap-3">
+                <div className="sticky bottom-0 z-10 flex flex-col gap-3 rounded-xl border border-true-gold/20 bg-black/65 p-3 backdrop-blur-sm">
                     <div className="text-center text-sm text-gray-300">
                         <p>Aposta: <span className="font-bold text-true-gold">{currentBet.toFixed(2)}€</span> | Saldo: <span className="font-bold text-true-gold">{balance.toFixed(2)}€</span></p>
                         <p className="mt-1 text-xs text-gray-400">Células seguras reveladas: {revealed.size} / {totalCells - numMines}</p>
@@ -342,10 +342,10 @@ const MinesGame = () => {
                         <button
                             onClick={cashOut}
                             disabled={revealed.size === 0 || isSettlingResult}
-                            className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-6 py-3 font-bold text-black transition-all duration-200 hover:from-green-400 hover:to-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
+                            className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600 px-4 py-3 font-bold text-black transition-all duration-200 hover:from-green-400 hover:to-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
                         >
-                            <span className="text-lg">
-                                💰 Sacar Ganhos ({(currentBet * selectedMultiplier).toFixed(2)}€)
+                            <span className="text-base sm:text-lg">
+                                💰 Sacar Lucro ({potentialProfit.toFixed(2)}€)
                             </span>
                         </button>
                     )}
@@ -357,7 +357,7 @@ const MinesGame = () => {
                                     ? "bg-green-950/60 border border-green-400 text-green-300 shadow-[0_0_20px_rgba(74,222,128,0.4)]"
                                     : "bg-red-950/60 border border-red-400 text-red-300 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
                             }`}>
-                                {gamePhase === "won" ? `🎉 GANHO! +${(currentBet * selectedMultiplier).toFixed(2)}€` : "💥 PERDESTE!"}
+                                {gamePhase === "won" ? `🎉 GANHO! +${potentialProfit.toFixed(2)}€` : "💥 PERDESTE!"}
                             </div>
                             <button
                                 onClick={playAgain}
