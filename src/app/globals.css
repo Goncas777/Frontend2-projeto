@@ -54,6 +54,22 @@ body {
   min-height: 100vh;
 }
 
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
 :root {
   --radius: 0.625rem;
   --foreground: oklch(0.145 0 0);

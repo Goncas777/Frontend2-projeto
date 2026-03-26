@@ -273,18 +273,18 @@ const RouletteGame = () => {
     }
 
     return (
-        <div className={`${dmSerifText.variable} absolute inset-x-0 top-0 bottom-0 overflow-y-auto px-4 pt-20 pb-6 sm:px-6 sm:pt-24 ${dmSerifText.className}`}>
+        <div className={`${dmSerifText.variable} absolute inset-x-0 top-0 bottom-0 overflow-x-hidden overflow-y-auto px-4 pt-20 pb-6 sm:px-6 sm:pt-24 ${dmSerifText.className}`}>
             <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[1.18fr_0.82fr]">
                 <div
-                    className="border border-[#c9a35b]/45 bg-[linear-gradient(165deg,rgba(7,20,18,0.88),rgba(4,9,9,0.94))] p-5 shadow-[0_30px_70px_rgba(0,0,0,0.65)] backdrop-blur-sm sm:p-7"
+                    className="min-w-0 border border-[#c9a35b]/45 bg-[linear-gradient(165deg,rgba(7,20,18,0.88),rgba(4,9,9,0.94))] p-4 shadow-[0_30px_70px_rgba(0,0,0,0.65)] backdrop-blur-sm sm:p-7"
                     style={{ clipPath: frameClip }}
                 >
-                    <div className="mb-5 flex items-center justify-between border-b border-[#c9a35b]/25 pb-4">
+                    <div className="mb-5 flex flex-col items-start gap-2 border-b border-[#c9a35b]/25 pb-4 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm uppercase tracking-[0.13em] text-zinc-300">Balance: <span className="font-semibold text-[#e9c987]">{balance.toFixed(2)}€</span></p>
                         <p className="text-sm uppercase tracking-[0.13em] text-zinc-300">Potential Profit: <span className="font-semibold text-emerald-300">{getPotentialProfit().toFixed(2)}€</span></p>
                     </div>
 
-                    <div className="relative mx-auto mb-7 h-[340px] w-[340px] md:h-[460px] md:w-[460px]">
+                    <div className="relative mx-auto mb-7 aspect-square w-full max-w-[340px] md:max-w-[460px]">
                         <div className="absolute left-1/2 top-1 z-30 h-0 w-0 -translate-x-1/2 border-l-[16px] border-r-[16px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#e9c987] drop-shadow-[0_0_10px_rgba(233,201,135,0.8)]" />
 
                         <div
@@ -360,7 +360,7 @@ const RouletteGame = () => {
                 </div>
 
                 <div
-                    className="border border-[#c9a35b]/45 bg-[linear-gradient(165deg,rgba(15,12,8,0.9),rgba(8,7,5,0.95))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.6)] backdrop-blur-sm"
+                    className="min-w-0 border border-[#c9a35b]/45 bg-[linear-gradient(165deg,rgba(15,12,8,0.9),rgba(8,7,5,0.95))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.6)] backdrop-blur-sm"
                     style={{ clipPath: frameClip }}
                 >
                     <h3 className="text-center text-2xl font-bold uppercase tracking-[0.14em] text-[#e9c987]">Bet</h3>

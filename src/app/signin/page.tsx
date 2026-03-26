@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DM_Serif_Text } from "next/font/google";
 import { supabase } from "@/lib/supabaseClients";
 import { useRouter } from "next/navigation";
+import { routes } from "@/lib/routes";
 
 const dmSerifText = DM_Serif_Text({
     subsets: ["latin"],
@@ -67,7 +68,7 @@ export default function SignIn() {
       setFormData({ email: "", password: "" });
 
       setTimeout(() => {
-        router.push("/");
+        router.push(routes.home);
       }, 1000);
     }
 
@@ -75,19 +76,19 @@ export default function SignIn() {
   }
 
   return (
-    <div className={`${dmSerifText.variable} flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black text-white relative overflow-hidden`}>
+    <div className={`${dmSerifText.variable} relative flex min-h-[calc(100dvh-72px)] flex-col items-center justify-center overflow-x-hidden overflow-y-auto bg-gradient-to-b from-black via-zinc-950 to-black px-4 py-10 text-white sm:px-6 sm:py-12`}>
 
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-true-gold/10 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-true-gold/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-true-gold/5 blur-3xl sm:h-96 sm:w-96" />
       
-      <div className="text-center mb-10 z-10">
-        <h1 className={`${dmSerifText.className} text-5xl font-bold text-true-gold mb-3 tracking-wide`}>
+      <div className="z-10 mb-8 text-center sm:mb-10">
+        <h1 className={`${dmSerifText.className} mb-3 text-3xl font-bold tracking-wide text-true-gold sm:text-4xl lg:text-5xl`}>
           Welcome Back
         </h1>
-        <p className="text-gray-400 text-lg">Continue your exclusive gaming journey</p>
+        <p className="text-base text-gray-400 sm:text-lg">Continue your exclusive gaming journey</p>
       </div>
 
-      <form onSubmit={handleSignIn} className="relative z-10 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 backdrop-blur-sm p-10 rounded-2xl shadow-2xl w-full max-w-md border border-true-gold/20 hover:border-true-gold/40 transition-all duration-500">
+      <form onSubmit={handleSignIn} className="relative z-10 w-full max-w-md rounded-2xl border border-true-gold/20 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 p-5 shadow-2xl backdrop-blur-sm transition-all duration-500 hover:border-true-gold/40 sm:p-8 lg:p-10">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-true-gold to-transparent rounded-full" />
         
         <div className="mb-6">
@@ -102,7 +103,7 @@ export default function SignIn() {
             value={formData.email}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 bg-black/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-true-gold focus:ring-1 focus:ring-true-gold/50 transition-all duration-300" 
+            className="w-full rounded-lg border border-zinc-700 bg-black/50 px-4 py-3 text-white placeholder-zinc-500 transition-all duration-300 focus:border-true-gold focus:outline-none focus:ring-1 focus:ring-true-gold/50" 
           />
         </div>
         
@@ -118,7 +119,7 @@ export default function SignIn() {
             value={formData.password}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 bg-black/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-true-gold focus:ring-1 focus:ring-true-gold/50 transition-all duration-300" 
+            className="w-full rounded-lg border border-zinc-700 bg-black/50 px-4 py-3 text-white placeholder-zinc-500 transition-all duration-300 focus:border-true-gold focus:outline-none focus:ring-1 focus:ring-true-gold/50" 
           />
         </div>
 
@@ -138,13 +139,13 @@ export default function SignIn() {
         
         <p className="text-center mt-6 text-gray-500 text-sm">
           Don't have an account?{" "}
-          <a onClick={() => router.push("/register")} className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
+          <button type="button" onClick={() => router.push(routes.register)} className="text-true-gold hover:text-amber-400 transition-colors duration-300 underline underline-offset-4">
             Register
-          </a>
+          </button>
         </p>
       </form>
 
-      <p className="mt-10 text-gray-600 text-sm z-10">
+      <p className="z-10 mt-8 text-center text-xs text-gray-600 sm:mt-10 sm:text-sm">
         ✦ Exclusive Games for Elite Players ✦
       </p>
     </div>

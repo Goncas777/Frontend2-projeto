@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DM_Serif_Text } from "next/font/google";
 import { supabase } from "@/lib/supabaseClients";
+import { routes } from "@/lib/routes";
 
 const dmSerifText = DM_Serif_Text({
     subsets: ["latin"],
@@ -29,6 +30,8 @@ const Navbar = () => {
     const [depositMessage, setDepositMessage] = useState<string | null>(null);
     const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
     const [isConfirmingDeposit, setIsConfirmingDeposit] = useState(false);
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const profileMenuRef = useRef<HTMLLIElement | null>(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -175,6 +178,20 @@ const Navbar = () => {
         void confirmDeposit();
     }, [searchParams, pathname, router, username, isConfirmingDeposit]);
 
+    useEffect(() => {
+        const handlePointerDown = (event: MouseEvent) => {
+            if (!profileMenuRef.current) return;
+            if (!profileMenuRef.current.contains(event.target as Node)) {
+                setShowProfileMenu(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handlePointerDown);
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown);
+        };
+    }, []);
+
     const handleDeposit = async () => {
         setDepositError(null);
         setDepositMessage(null);
@@ -217,20 +234,30 @@ const Navbar = () => {
         }
     };
 
+    const handleLogout = async () => {
+        setShowProfileMenu(false);
+        setShowDepositPanel(false);
+
+        await supabase.auth.signOut();
+        setUsername(null);
+        setSaldo(0);
+        router.push(routes.signIn);
+    };
+
     return (
-        <nav className={`sticky top-0 z-50 flex justify-between border-b border-true-gold/30 bg-black/70 p-4 px-6 text-white backdrop-blur-md sm:px-12 ${dmSerifText.className}`}>
-            <ul className={`${dmSerifText.className} `}>
+        <nav className={`sticky top-0 z-50 flex items-center justify-between gap-2 border-b border-true-gold/30 bg-black/70 px-3 py-3 text-white backdrop-blur-md sm:px-12 sm:py-4 ${dmSerifText.className}`}>
+            <ul className={`${dmSerifText.className} min-w-0`}>
                 <li>
                     <button
                         type="button"
-                        onClick={() => router.push("/")}
-                        className="text-true-gold text-xl"
+                        onClick={() => router.push(routes.home)}
+                        className="text-lg text-true-gold sm:text-xl"
                     >
                         ROYELLE
                     </button>
                 </li>
             </ul>
-            <ul className="flex gap-4">
+            <ul className="flex shrink-0 items-center gap-2 sm:gap-4">
                 {username ? (
                     <>
                         <li className="relative">
@@ -238,16 +265,17 @@ const Navbar = () => {
                                 type="button"
                                 onClick={() => {
                                     setShowDepositPanel((prev) => !prev);
+                                    setShowProfileMenu(false);
                                     setDepositError(null);
                                     setDepositMessage(null);
                                 }}
-                                className="px-5 py-1 bg-true-gold hover:opacity-80 rounded-lg text-black font-semibold"
+                                className="rounded-lg bg-true-gold px-3 py-1 text-sm font-semibold text-black hover:opacity-80 sm:px-5 sm:text-base"
                             >
                                 Deposit
                             </button>
 
                             {showDepositPanel && (
-                                <div className="absolute right-0 z-[70] mt-3 w-72 rounded-xl border border-true-gold/40 bg-black/95 p-4 shadow-[0_0_25px_rgba(212,175,55,0.2)]">
+                                <div className="fixed left-1/2 top-[78px] z-[70] w-[calc(100vw-1rem)] max-w-[22rem] -translate-x-1/2 rounded-xl border border-true-gold/40 bg-black/95 p-4 shadow-[0_0_25px_rgba(212,175,55,0.2)] sm:absolute sm:right-0 sm:left-auto sm:top-auto sm:mt-3 sm:w-72 sm:max-w-none sm:translate-x-0">
                                     <p className="text-sm font-semibold text-true-gold">Deposit Funds</p>
                                     <div className="mt-3">
                                         <label htmlFor="deposit-amount" className="text-xs text-gray-300 uppercase tracking-wide">Amount (€)</label>
@@ -262,7 +290,7 @@ const Navbar = () => {
                                         />
                                     </div>
 
-                                    <div className="mt-3 flex gap-2">
+                                    <div className="mt-3 flex flex-wrap gap-2">
                                         {[10, 25, 50, 100].map((amount) => (
                                             <button
                                                 key={amount}
@@ -290,18 +318,40 @@ const Navbar = () => {
                             )}
                         </li>
 
-                        <li className="px-5 py-1 text-true-gold border border-true-gold rounded-lg">
+                        <li className="whitespace-nowrap rounded-lg border border-true-gold px-3 py-1 text-sm text-true-gold sm:px-5 sm:text-base">
                             {saldo.toFixed(2)} €
                         </li>
 
-                        <li>
-                            <Image
-                                src="/icondefault.png"
-                                alt="User avatar"
-                                width={32}
-                                height={32}
-                                className="w-8 h-8 rounded-full object-cover object-[center_30%]"
-                            />
+                        <li ref={profileMenuRef} className="relative">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowProfileMenu((prev) => !prev);
+                                    setShowDepositPanel(false);
+                                }}
+                                className="rounded-full ring-1 ring-transparent transition hover:ring-true-gold/60"
+                                aria-label="Open profile menu"
+                            >
+                                <Image
+                                    src="/icondefault.png"
+                                    alt="User avatar"
+                                    width={32}
+                                    height={32}
+                                    className="h-7 w-7 rounded-full object-cover object-[center_30%] sm:h-8 sm:w-8"
+                                />
+                            </button>
+
+                            {showProfileMenu && (
+                                <div className="absolute right-0 mt-2 w-40 rounded-lg border border-true-gold/40 bg-black/95 p-2 shadow-[0_0_18px_rgba(212,175,55,0.2)]">
+                                    <button
+                                        type="button"
+                                        onClick={handleLogout}
+                                        className="w-full rounded-md border border-red-500/45 px-3 py-2 text-left text-sm font-semibold text-red-300 transition-colors hover:bg-red-500 hover:text-black"
+                                    >
+                                        Log out
+                                    </button>
+                                </div>
+                            )}
                         </li>
                     </>
                 ) : (
@@ -309,8 +359,8 @@ const Navbar = () => {
                         <li>
                             <button
                                 type="button"
-                                onClick={() => router.push("/register")}
-                                className="px-5 py-1 bg-true-gold opacity-100 hover:opacity-80 hover:cursor-pointer rounded-lg text-black block"
+                                onClick={() => router.push(routes.register)}
+                                className="block rounded-lg bg-true-gold px-3 py-1 text-sm text-black opacity-100 hover:cursor-pointer hover:opacity-80 sm:px-5 sm:text-base"
                             >
                                 Register
                             </button>
@@ -318,8 +368,8 @@ const Navbar = () => {
                         <li>
                             <button
                                 type="button"
-                                onClick={() => router.push("/signin")}
-                                className="px-5 py-1 hover:text-true-gold hover:cursor-pointer rounded-lg text-gray-400 block"
+                                onClick={() => router.push(routes.signIn)}
+                                className="block rounded-lg px-3 py-1 text-sm text-gray-400 hover:cursor-pointer hover:text-true-gold sm:px-5 sm:text-base"
                             >
                                 Sign In
                             </button>
