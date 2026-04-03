@@ -102,7 +102,9 @@ export default function RootLayout({
             {children}
             <Footer />
           </div>
-          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID} />
+          <Suspense fallback={null}>
+            <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID} />
+          </Suspense>
         </main>
       </body>
     </html>
