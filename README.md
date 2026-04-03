@@ -35,6 +35,7 @@ Required variables:
 - `STRIPE_SECRET_KEY` (test secret key)
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test public key)
 - `NEXT_PUBLIC_SITE_URL` (e.g. `http://localhost:3000`)
+- `NEXT_PUBLIC_GA_ID` (Google Analytics Measurement ID, e.g. `G-XXXXXXXXXX`)
 
 ### 2) Start app
 
@@ -53,6 +54,20 @@ npm run dev
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Testing
+
+Run unit tests with Jest:
+
+```bash
+npm test
+```
+
+Watch mode:
+
+```bash
+npm run test:watch
+```
 
 ## Learn More
 

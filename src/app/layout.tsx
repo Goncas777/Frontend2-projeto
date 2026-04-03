@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Suspense } from "react";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://royelle.vercel.app";
 const geistSans = Geist({
@@ -98,7 +100,9 @@ export default function RootLayout({
               <Navbar />
             </Suspense>
             {children}
+            <Footer />
           </div>
+          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID} />
         </main>
       </body>
     </html>

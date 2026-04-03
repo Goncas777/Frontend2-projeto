@@ -104,21 +104,7 @@ select:disabled {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Custom Animations */
-/* @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-} */
+/* Shared text treatment */
 
 
 .text-gold-gradient {
@@ -160,7 +146,7 @@ select:disabled {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Mines Game Animations */
+/* Mines animation set */
 @keyframes multiplier-pulse {
   0%, 100% {
     opacity: 1;
